@@ -1,8 +1,19 @@
-import { Box, Button, Container, IconButton, Select, TextField, Typography } from '@material-ui/core'
+import {
+    Box,
+    Button,
+    Container,
+    IconButton,
+    Select,
+    TextField,
+    Typography
+} from '@material-ui/core'
+
+import { useDropzone } from 'react-dropzone'
 import { makeStyles } from '@material-ui/core/styles'
 import { DeleteForever } from '@material-ui/icons'
 
 import TemplateDefault from '../../src/templates/Default'
+import { useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
     mask:{},
@@ -21,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
     thumbsContainer:{
         display: 'flex',
+        flexWrap: 'wrap',
         marginTop: 15
 
     },
@@ -40,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
         width: 200,
         height: 150,
+        margin: '0 15px 15px 0',
         backgroundSize: 'cover',
         backgroundPosition: 'center center',
 
@@ -69,6 +82,24 @@ const useStyles = makeStyles((theme) => ({
 
 const Publish = () => {
     const classes = useStyles()
+    const [files, setFiles] = useState([])  
+
+    const { getRootProps, getInputProps } = useDropzone({
+        accept: 'image/*',
+        onDrop: (accepedtFile) => {
+
+            const newFiles = accepedtFile.map(file => {
+                return Object.assign(file, {
+                    preview: URL.createObjectURL(file)
+                })
+            }) 
+
+            setFiles([
+                ...files,
+                ...newFiles
+            ])
+        }
+    })
 
     return(
         <TemplateDefault>
@@ -132,27 +163,36 @@ const Publish = () => {
                     A primeira imagem é a foto principal do anúncio.
                 </Typography>
                 <Box className={classes.thumbsContainer}>
-                    <Box className={classes.dropzone}>
+                    <Box className={classes.dropzone} {...getRootProps()}>
+                        <input {...getInputProps()} />
                     <Typography variant="body2" color="textPrimary">
                         Clique para adicionar ou arraste a imagme para aqui.
                     </Typography>
                     </Box>
-
+                    {
+                        files.map((file, index) => (
                     <Box 
+                        key={file.name}
                         className={classes.thumb}
-                        style={{ backgroundImage: 'url(https://source.unsplash.com/random)' }}
+                        style={{ backgroundImage: `url(${file.preview})` }}
                     >
-                        <Box className={classes.mainImage}>
-                            <Typography variant="body2" color="secondary">
-                                Principal
-                            </Typography>
-                        </Box>
+                        {
+                            index === 0 ?
+                                <Box className={classes.mainImage}>
+                                    <Typography variant="body2" color="secondary">
+                                        Principal
+                                    </Typography>
+                                </Box>      
+                            : null
+                        }
                         <Box className={classes.mask}>
                             <IconButton color="secondary" >
                                 <DeleteForever fontSize="large"/>
                             </IconButton>
                         </Box>
                     </Box>
+                        ))
+                    }
 
                 </Box>
                 </Box>
