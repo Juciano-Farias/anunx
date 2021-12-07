@@ -6,10 +6,8 @@ import {
     Typography,
     Grid,
     Card,
-    CardActions,
     CardContent,
     CardMedia,
-    Button,
 } from '@material-ui/core'
 
 import SearchIcon from '@material-ui/icons/search'
@@ -56,7 +54,7 @@ const Home = () => {
                 Destaques
             </Typography>
             <br />
-            <Container maxWidth="md" className={classes.cardGrid}>
+            <Container maxWidth="lg" className={classes.cardGrid}>
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={6} md={4} >
                         <Card>
