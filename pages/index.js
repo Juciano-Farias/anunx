@@ -5,15 +5,13 @@ import {
     Paper,
     Typography,
     Grid,
-    Card,
-    CardContent,
-    CardMedia,
 } from '@material-ui/core'
+
+import Card from '../src/components/Card'
 
 import SearchIcon from '@material-ui/icons/search'
 import TemplateDefault from '../src/templates/Default'
 import { makeStyles } from '@material-ui/core'
-import { ThemeContext } from '@emotion/react'
 
 const useStyels = makeStyles((theme) => ({
     searchBox: {
@@ -22,16 +20,16 @@ const useStyels = makeStyles((theme) => ({
         padding: theme.spacing(0, 2),
         marginTop: '20px',
     },
-    cardMedia: {
-        paddingTop: '56%'
-      }, 
+    cardGrid: {
+        marginTop: '50px',
+    }
 }))
 
 const Home = () => {
     const classes = useStyels()
     return(
         <TemplateDefault>
-            <Container maxWidth="md">
+            <Container maxWidth="md" className={classes.searchContainer}>
                 <Typography component="h1" variant="h3" align="center" color="textPrimary">
                     O que deseja encontrar?
                 </Typography>
@@ -46,63 +44,30 @@ const Home = () => {
                 </Paper>
             </Container>
 
-            
-            <Typography component="h2" variant="h4" align="center" color="textPrimary">
-                Destaques
-            </Typography>
-            <br />
-            <Container maxWidth="lg" className={classes.cardGrid}>
+            <Container maxWidth="md" className={classes.cardGrid}>
+                <Typography component="h2" variant="h4" align="center" color="textPrimary">Destaques</Typography>
+                <br />
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={6} md={4} >
-                        <Card>
-                        <CardMedia 
-                            className={classes.cardMedia}
-                            image={'https://source.unsplash.com/random'}
-                            title="titulo da imagem"
-                        />
-                        <CardContent>
-                            <Typography component="h2" variant="h5">
-                                Produto X
-                            </Typography>
-                            <Typography>
-                                R$: 60,00
-                            </Typography>
-                        </CardContent>
-                        </Card>
+                    <Card 
+                        image={'https://source.unsplash.com/random'}
+                        title="Produto X"
+                        subtitle="R$: 60,00"
+                    />
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} >
-                        <Card>
-                        <CardMedia 
-                            className={classes.cardMedia}
-                            image={'https://source.unsplash.com/random'}
-                            title="titulo da imagem"
+                        <Card 
+                        image={'https://source.unsplash.com/random'}
+                        title="Produto X"
+                        subtitle="R$: 60,00"
                         />
-                        <CardContent>
-                            <Typography component="h2" variant="h5">
-                                Produto X
-                            </Typography>
-                            <Typography>
-                                R$: 60,00
-                            </Typography>
-                        </CardContent>
-                        </Card>
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} >
-                        <Card>
-                        <CardMedia 
-                            className={classes.cardMedia}
-                            image={'https://source.unsplash.com/random'}
-                            title="titulo da imagem"
+                        <Card 
+                        image={'https://source.unsplash.com/random'}
+                        title="Produto X"
+                        subtitle="R$: 60,00"
                         />
-                        <CardContent>
-                            <Typography component="h2" variant="h5">
-                                Produto X
-                            </Typography>
-                            <Typography>
-                                R$: 60,00
-                            </Typography>
-                        </CardContent>
-                        </Card>
                     </Grid>
                 </Grid>
             </Container>
