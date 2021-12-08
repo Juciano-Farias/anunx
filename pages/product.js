@@ -1,6 +1,20 @@
-import { Avatar, Box, Card, CardHeader, CardMedia, Chip, Container, Grid, Typography } from '@material-ui/core'
-import TemplateDefault from '../src/templates/Default'
+import {
+    Avatar,
+    Box,
+    Card,
+    CardHeader,
+    CardMedia,
+    Chip,
+    Container,
+    Grid,
+    Typography
+} from '@material-ui/core'
+
 import { makeStyles } from '@material-ui/core'
+
+import Carousel from 'react-material-ui-carousel'
+
+import TemplateDefault from '../src/templates/Default'
 
 const useStyles = makeStyles((theme) => ({
     box:{
@@ -14,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     price: {
         fontWeight: 'bold',
         marginBottom: '15px'
+    },
+    card: {
+        height: '100%'
+    },
+    cardMedia: {
+        paddingTop: '56%'
     }
 }))
 
@@ -26,7 +46,31 @@ const Product = () => {
                 <Grid container spacing={3}>
                     <Grid item xs={8}>
                         <Box className={classes.box}>
-                            <Typography>Carrossel</Typography>
+                            <Carousel
+                                autoPlay={false}
+                                animation="slide"
+                                navButtonsAlwaysVisible
+                                navButtonsProps={{
+                                    style: {
+                                        color: 'white'
+                                    }
+                                }} 
+                            >
+                                <Card className={classes.card}>
+                                    <CardMedia 
+                                        className={classes.cardMedia}
+                                        image='https://source.unsplash.com/random?q=1'
+                                        title="Título da imagem"
+                                    />
+                                </Card>
+                                <Card className={classes.card}>
+                                    <CardMedia 
+                                        className={classes.cardMedia}
+                                        image='https://source.unsplash.com/random?q=2'
+                                        title="Título da imagem"
+                                    />
+                                </Card>
+                            </Carousel>
                         </Box>
 
                         <Box className={classes.box} textAlign="left">
