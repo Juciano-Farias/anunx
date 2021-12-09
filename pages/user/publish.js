@@ -4,10 +4,8 @@ import {
     Container,
     IconButton,
     Select,
-    TextField,
     Typography,
     InputLabel,
-    OutlinedInput,
     InputAdornment,
     MenuItem,
     FormControl,
@@ -20,7 +18,7 @@ import * as yup from 'yup';
 
 import { useDropzone } from 'react-dropzone'
 import { makeStyles } from '@material-ui/core/styles'
-import { DeleteForever, Update } from '@material-ui/icons'
+import { DeleteForever } from '@material-ui/icons'
 
 import TemplateDefault from '../../src/templates/Default'
 import { useState } from 'react'
