@@ -145,6 +145,7 @@ const Publish = () => {
                     setFieldValue
                 }) => {
 
+                    // eslint-disable-next-line react-hooks/rules-of-hooks
                     const { getRootProps, getInputProps } = useDropzone({
                         accept: 'image/*',
                         onDrop: (accepedtFile) => {
