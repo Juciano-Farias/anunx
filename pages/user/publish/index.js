@@ -174,6 +174,7 @@ const Publish = () => {
                                         <InputLabel className={classes.inputLabel}>Email</InputLabel>
                                             <Input 
                                                 name="email"
+                                                type="email"
                                                 value={values.email}
                                                 onChange={handleChange}
                                             />
