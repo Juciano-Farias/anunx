@@ -108,7 +108,7 @@ const Singup = () => {
                                         color="primary"
                                         className={classes.submit}
                                     >
-                                        Cdastrar
+                                        Cadastrar
                                     </Button>
                                     </form>
                                 )
