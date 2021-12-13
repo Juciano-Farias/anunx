@@ -17,9 +17,10 @@ const validationSchema = yup.object().shape({
         .required('Campo obrigatório'),
 
     password: yup.string()
+        .min(6, 'Mínimo de 6 caracteres')
         .required('Campo obrigatório'),
     
-    passwordConf: yup.number()
+    passwordConf: yup.string()
         .required('Campo obrigatório')
         .oneOf([yup.ref('password'), null], 'As senhas precisam ser iguais')
 

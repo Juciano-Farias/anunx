@@ -7,6 +7,13 @@ const useStyles = makeStyles((theme) => ({
     box:{
         backgroundColor: theme.palette.background.white,
         padding: theme.spacing(3)
+    },
+    submit: {
+        marginTop: theme.spacing(3)
+    },
+    loading: {
+        display: 'block',
+        margin: '10px auto',
     }
 }))
 
