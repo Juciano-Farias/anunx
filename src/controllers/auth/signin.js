@@ -1,10 +1,11 @@
-import UsersModel from '../models/users'
-import dbConnect from '../utils/dbConnect'
+import UsersModel from '../../models/users'
+import dbConnect from '../../utils/dbConnect'
+import { compare } from '../../utils/password'
 
 const post = async (req, res) => {
     const {
         email,
-        password
+        password,
     } = req.body
 
     await dbConnect()
@@ -12,7 +13,7 @@ const post = async (req, res) => {
     const user = await UsersModel.findOne({ email })
 
     if (!user) {
-        res.status(401).json({ success: false, message: 'invalid' })
+        return res.status(401).json({ success: false, message: 'invalid' })
     }
 
     const passIsCorrect = compare(password, user.password)

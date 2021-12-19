@@ -16,5 +16,5 @@ const compare =  (pwd, hash) => {
 
 export {
     crypto,
-    compare
+    compare,
 }
