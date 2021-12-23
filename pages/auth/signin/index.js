@@ -23,7 +23,7 @@ import { initialValues, validationSchema } from './formValues'
 import useToasy from '../../../src/contexts/Toasty'
 import useStyles from './styles'
 
-const Signin = () => {
+const Signin = ({ APP_URL }) => {
     const classes = useStyles()
     const router = useRouter()
     const { setToasty } = useToasy()
@@ -35,14 +35,14 @@ const Signin = () => {
         await signIn('credentials', {
             email: values.email,
             password: values.password,
-            callbackUrl: 'http://localhost:3000/user/dashboard'
+            callbackUrl: `${APP_URL}:3000/user/dashboard`
         })
 
     }
 
     const handleGoogleLogin = () => {
         signIn('google', {
-            callbackUrl: 'http://localhost:3000/user/dashboard'
+            callbackUrl: `${APP_URL}:3000/user/dashboard`
         })
     }
 
@@ -155,6 +155,12 @@ const Signin = () => {
             </Container>
         </TemplateDefault>
     )
+}
+
+Signin.getInitialProps = async function() {
+    return {
+        APP_URL: process.env.APP_URL
+    }
 }
 
 export default Signin
