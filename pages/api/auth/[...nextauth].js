@@ -1,10 +1,16 @@
 import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import axios from "axios"
 
 export default NextAuth({  
     providers: [
-        CredentialsProvider ({
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET
+        }),
+
+        CredentialsProvider({
             name: 'Credentials',
             async authorize(credentials) {
                 const res = await axios.post('http://localhost:3000/api/auth/signin', credentials)
@@ -27,7 +33,11 @@ export default NextAuth({
 
     jwt: {
         secret: process.env.JWT_TOKEN,
+        maxAge: 60,
+        updateAge: 60
     },
 
-  database: process.env.MONGODB_URI,
+    database: process.env.MONGODB_URI,
+
+    debug: true
 })

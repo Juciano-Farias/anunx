@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { Formik } from 'formik'
 import axios from 'axios'
 import { useRouter } from 'next/dist/client/router'
@@ -26,15 +27,25 @@ const Signin = () => {
     const classes = useStyles()
     const router = useRouter()
     const { setToasty } = useToasy()
-    const session = useSession()
-
+    const { data: session, status } = useSession()
+    
+    console.log(session)
+    
     const handleFormSubmit = async (values) => {
         await signIn('credentials', {
             email: values.email,
             password: values.password,
             callbackUrl: 'http://localhost:3000/user/dashboard'
         })
+
     }
+
+    const handleGoogleLogin = () => {
+        signIn('google', {
+            callbackUrl: 'http://localhost:3000/user/dashboard'
+        })
+    }
+
     
     return(
         <TemplateDefault>
@@ -46,6 +57,29 @@ const Signin = () => {
 
             <Container maxWidth="md">
                 <Box className={classes.box}>
+
+                    <Box display="flex" justifyContent="center">
+                        <Button 
+                            variant="contained"
+                            color="primary"
+                            startIcon={
+                                <Image 
+                                    src="/images/logo_google.svg" 
+                                    width={20} 
+                                    height={20} 
+                                    alt="Login com o google"
+                                />
+                            }
+                            onClick={handleGoogleLogin}
+                        >
+                            Entrar com o Google
+                        </Button>
+                    </Box>
+
+                    <Box className={classes.orSeparator}>
+                        <span>ou</span>
+                    </Box>
+
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validationSchema}
