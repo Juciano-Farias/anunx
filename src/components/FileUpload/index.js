@@ -15,11 +15,9 @@ const FileUpload = ({ files, errors, touched, setFieldValue }) => {
         accept: 'image/*',
         onDrop: (accepedtFile) => {
 
-            const newFiles = accepedtFile.map(file => {
-                return Object.assign(file, {
-                    preview: URL.createObjectURL(file)
-                })
-            }) 
+            const newFiles = accepedtFile.map(file => Object.assign(file,{
+                preview: URL.createObjectURL(file)
+            }))
 
             setFieldValue('files', [
                 ...files,
