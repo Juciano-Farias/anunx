@@ -51,8 +51,8 @@ export default function ButtonAppBar() {
         <AppBar position="static" elevation={3}>
             <Container maxWidth="lg">
                 <Toolbar>
-                        <Typography variant="6" className={classes.title}>
-                            AnunX
+                        <Typography variant="h4" className={classes.title}>
+                            Anunx
                         </Typography>
                     <Link href={session ? '/user/publish' : '/auth/signin'} passHref>
                         <Button color="inherit" variant="outlined" className={classes.headButton}>
