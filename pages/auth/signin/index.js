@@ -1,56 +1,56 @@
 import Image from 'next/image'
 import { Formik } from 'formik'
 import axios from 'axios'
-import { useRouter } from 'next/dist/client/router'
-import { signIn, useSession }  from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { signIn, useSession } from 'next-auth/client'
 
 import {
     Box,
     Container,
     Typography,
+    Input,
     FormControl,
     InputLabel,
     FormHelperText,
-    Input,
     Button,
-    CircularProgress
+    CircularProgress,
 } from '@material-ui/core'
 
-import { Alert } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab'
 
-import TemplateDefault from '../../../src/templates/Default'
 import { initialValues, validationSchema } from './formValues'
-import useToasy from '../../../src/contexts/Toasty'
+import TemplateDefault  from '../../../src/templates/Default'
+import useToasty from '../../../src/contexts/Toasty'
 import useStyles from './styles'
 
-const Signin = ({ APP_URL }) => {
-    const classes = useStyles()
-    const router = useRouter()
-    const { setToasty } = useToasy()
-    const { data: session, status } = useSession()
-    
-    console.log(session)
-    
-    const handleFormSubmit = async (values) => {
-        await signIn('credentials', {
-            email: values.email,
-            password: values.password,
-            callbackUrl: `${APP_URL}:3000/user/dashboard`
-        })
+const SignIn = ({ APP_URL }) => {
 
-    }
+    const classes = useStyles()
+
+    const router = useRouter()
+
+    const {setToasty} = useToasty()
+
+    const [ session ] = useSession()
 
     const handleGoogleLogin = () => {
         signIn('google', {
-            callbackUrl: `${APP_URL}:3000/user/dashboard`
+            callbackUrl: `${APP_URL}/user/dashboard`
         })
     }
 
-    
+    const handleFormSubmit = async (values) => {
+        signIn('credentials', {
+            email: values.email,
+            password: values.password,
+            callbackUrl: `${APP_URL}/user/dashboard`
+        })
+    }
+
     return(
         <TemplateDefault>
             <Container maxWidth="sm" component="main" className={classes.container}>
-                <Typography component="h2" variant="h2" align="center" color="textPrimary">
+                <Typography component="h1" variant="h2" align="center" color="textPrimary">
                     Entre na sua conta
                 </Typography>
             </Container>
@@ -63,16 +63,16 @@ const Signin = ({ APP_URL }) => {
                             variant="contained"
                             color="primary"
                             startIcon={
-                                <Image 
-                                    src="/images/logo_google.svg" 
-                                    width={20} 
-                                    height={20} 
-                                    alt="Login com o google"
+                                <Image
+                                    src="/images/logo_google.svg"
+                                    width={20}
+                                    height={20}
+                                    alt="Login com Google"
                                 />
                             }
                             onClick={handleGoogleLogin}
-                        >
-                            Entrar com o Google
+                        >   
+                            Entrar com Google
                         </Button>
                     </Box>
 
@@ -85,6 +85,7 @@ const Signin = ({ APP_URL }) => {
                         validationSchema={validationSchema}
                         onSubmit={handleFormSubmit}
                     >
+
                         {
                             ({
                                 touched,
@@ -96,45 +97,49 @@ const Signin = ({ APP_URL }) => {
                             }) => {
                                 return(
                                     <form onSubmit={handleSubmit}>
+                                        <FormControl fullWidth error={errors.email && touched.email} className={classes.FormControl}>
                                         {
                                             router.query.i === '1'
-                                            ?   (
-                                                <Alert color='error' severity='error' className={classes.errorMessage}>
-                                                    Usuário ou senha inválidos
+                                            ? (
+                                                <Alert severity ="error" className={classes.errorMessage}>
+                                                    Usuário ou senha inválidos.
                                                 </Alert>
                                             )
                                             : null
                                         }
-                                        <FormControl error={errors.email && touched.email} fullWidth> 
-                                            <InputLabel className={classes.inputLabel}>Email</InputLabel>
-                                                <Input 
-                                                    name="email"
-                                                    type="email"
-                                                    value={values.email}
-                                                    onChange={handleChange}
-                                                />
+
+                                            <InputLabel>E-mail</InputLabel>
+                                            <Input
+                                                name="email"
+                                                type="email"
+                                                value={values.email}
+                                                onChange={handleChange}
+                                            />
                                             <FormHelperText>
-                                                { errors.email && touched.email ? errors.email : null }
+                                                {errors.email && touched.email ? errors.email : null}
                                             </FormHelperText>
                                         </FormControl>
 
-                                        <FormControl error={errors.password && touched.password} fullWidth>
-                                        <InputLabel className={classes.inputLabel}>Senha</InputLabel>
-                                            <Input 
+                                        <FormControl fullWidth error={errors.password && touched.password} className={classes.FormControl}>
+                                            <InputLabel>Senha</InputLabel>
+                                            <Input
                                                 name="password"
-                                                type='password'
+                                                type="password"
                                                 value={values.password}
                                                 onChange={handleChange}
                                             />
-                                        <FormHelperText>
-                                            { errors.password && touched.password ? errors.password : null }
-                                        </FormHelperText>
-                                    </FormControl>
+                                            <FormHelperText>
+                                                {errors.password && touched.password ? errors.password : null}
+                                            </FormHelperText>
+                                        </FormControl>
 
-                                    {
-                                        isSubmitting 
-                                            ?   <CircularProgress className={classes.loading} />
-                                            :   <Button
+                                        {
+                                            isSubmitting
+                                            ? (
+                                                <CircularProgress className={classes.loading} />
+                                            ) : (
+
+                                                <Button
                                                     type="submit"
                                                     fullWidth
                                                     variant="contained"
@@ -143,9 +148,8 @@ const Signin = ({ APP_URL }) => {
                                                 >
                                                     Entrar
                                                 </Button>
-                                        
-                                    }
-
+                                            )
+                                        }
                                     </form>
                                 )
                             }
@@ -157,10 +161,29 @@ const Signin = ({ APP_URL }) => {
     )
 }
 
+/* 
 Signin.getInitialProps = async function() {
     return {
         APP_URL: process.env.APP_URL
+   }
+}
+*/
+
+export const getServerSideProps = async () => ({
+    props: {
+        APP_URL: process.env.APP_URL
+    }
+})
+
+/*
+export const getServerSideProps = () => {
+    return {
+        props: {
+            APP_URL: process.env.APP_URL
+        }
     }
 }
+*/
 
-export default Signin
+
+export default SignIn

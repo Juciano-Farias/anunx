@@ -1,27 +1,24 @@
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/dist/client/router"
-import { useEffect } from "react"
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/client'
 
-const CheckAuth = ({ Component, pageProps }) => {
-    const { data: session, status } = useSession()
-    const isUser = !!session?.user
+const CheckAuth = ({Component, pageProps}) => {
+    const [session, loading] = useSession()
     const router = useRouter()
 
     useEffect(() => {
-        if(status === "loading") return 
-
-        if(!isUser) {
+        if (loading) return
+        
+        if (!session){
             router.push('/auth/signin')
-        }  
-    }, [isUser, status])
+        }
+    }, [session, loading])
 
-    if(isUser) {
+    if (session){
         return <Component {...pageProps} />
     }
-
-    console.log(isUser)
+    
     return 'Carregando...'
-
 }
 
 export default CheckAuth
