@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/client'
+import LoadingAuth from './LoadingAuth'
 
 const CheckAuth = ({Component, pageProps}) => {
     const [session, loading] = useSession()
@@ -18,7 +19,7 @@ const CheckAuth = ({Component, pageProps}) => {
         return <Component {...pageProps} />
     }
     
-    return 'Carregando...'
+    return <LoadingAuth />
 }
 
 export default CheckAuth
