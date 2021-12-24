@@ -1,42 +1,125 @@
+import { useState } from 'react'
+import Link from 'next/link'
+import axios from 'axios'
+
 import {
   Button,
-  Container,
-  Grid,
-  Typography
+  Container, 
+  Grid, 
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@material-ui/core'
 
-import Card from '../../src/components/Card'
-
-import { makeStyles } from '@material-ui/core'
-import TemplateDfault from '../../src/templates/Default'
-import dbConnect from '../../src/utils/dbConnect'
+import {makeStyles} from '@material-ui/core/styles'
 import {getSession} from 'next-auth/client'
-import ProductsModel from '../../src/models/products'
 
-const useStyles = makeStyles(() => ({
-  buttonAdd: {
-    margin: '30px auto',
-    display: 'block',
-  }
+import dbConnect from '../../src/utils/dbConnect'
+import ProductsModel from '../../src/models/products'
+import TemplateDefault from '../../src/templates/Default'
+import Card from '../../src/components/Card'
+import { formatCurrency } from '../../src/utils/currency'
+import useToasty from '../../src/contexts/Toasty'
+
+const useStyles = makeStyles((theme) => ({
+  buttonAdd:{
+    margin: '30px auto 50px auto',
+    display: 'inline-block',
+  },
 }))
 
-const Home = ({ products }) => {
+ const Home = ({products}) => {
   const classes = useStyles()
+  const {setToasty} = useToasty()
+  const [productId, setProductId] = useState()
+  const [removedProducts, setRemovedProducts] = useState([])
+  const [openConfirmModal, setOpenConfirmModal] = useState(false)
+
+  const handleCloseModal = () => setOpenConfirmModal(false)
+
+  const handleClickRemove = (productId) => {
+    setProductId(productId)
+    setOpenConfirmModal(true)
+  }
+
+  const handleConfirmRemove = () => {
+    axios.delete('/api/products/delete', {
+      data: {
+        id: productId
+      }
+    })
+      .then(handleSuccess)
+      .catch(handleError)
+  }
+
+  const handleSuccess = () => {
+    console.log('blz, deletou')
+    
+    setOpenConfirmModal(false)
+    setRemovedProducts([...removedProducts, productId])
+
+    setToasty({
+      open: true,
+      severity: 'success',
+      text: 'Anúncio removido com sucesso!'
+    })
+  }
+
+  const handleError = () => {
+    console.log('ops, deu erro')
+    setOpenConfirmModal(false)
+    setToasty({
+      open: true,
+      severity: 'error',
+      text: 'Ops, ocorreu um erro!'
+    })
+  }
 
   return (
-    <TemplateDfault>
-      <Container maxWidth="sm">
-      <Typography component="h1" variant="h2" align="center">
-        Meus Anúncios 
-      </Typography>
-      <Button variant="contained" color="primary" className={classes.buttonAdd}>
-        Publicar novo anúncio
-      </Button>
+    <TemplateDefault>
+      <Dialog
+        open={openConfirmModal}
+        onClose={handleCloseModal}
+      >
+        <DialogTitle>Deseja realmente remover este anúncio?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Ao confirmar esta operação, não poderá voltar atrás.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleConfirmRemove} color="primary" autoFocus>
+            Remover
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Container maxWidth="sm" textAlign="center" align="center">
+          <Typography component="h1" variant="h2" align="center">
+            Meus anuncios
+          </Typography>
+          <Link href={'/user/publish'} passHref>
+            <Button variant="contained" color="primary" className={classes.buttonAdd}>
+              Publicar novo anúncio
+            </Button>
+          </Link>
       </Container>
       <Container maxWidth="md">
         
-        <Grid container spacing={4}>
         {
+          products.lentgh === 0 &&
+          <Typography component="div" variant="body1" align="center" color="textPrimary" gutterBottom>
+            Nenhum anúncio publicado.
+          </Typography>
+        }
+
+        <Grid container spacing={4}>
+          {
             products.map(product => {
               if (removedProducts.includes(product._id)) return null
 
@@ -63,7 +146,7 @@ const Home = ({ products }) => {
           }
         </Grid>
       </Container>
-    </TemplateDfault>
+    </TemplateDefault>
   )
 }
 
