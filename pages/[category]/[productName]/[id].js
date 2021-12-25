@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(3),
         marginBottom: theme.spacing(3),
     },
+    text:{
+        overflow: 'scroll',
+    },
     productName:{
         margin: '15px 0',
     },
@@ -83,7 +86,7 @@ const Product = ({product}) => {
                         </Box>
                         <Box className={classes.box} textAlign="left">
                             <Typography component="h6" variant="h6">Descrição</Typography>
-                            <Typography component="p" variant="body2">
+                            <Typography component="p" variant="body2" className={classes.text}>
                                 {product.description}
                             </Typography>
                         </Box>

@@ -29,6 +29,10 @@ const schema = new mongoose.Schema({
         phone: String,
         image: String,
     },
+    // local: {
+    //     type: String,
+    //     required: [true, 'O campo "local" é obrigatório']
+    // },
     files: {
         type: [filesSchema],
         default: undefined,

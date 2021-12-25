@@ -1,78 +1,115 @@
+import { useState } from 'react'
+import Link from 'next/link'
+import slugify from 'slugify'
+import {useRouter} from 'next/router'
+
 import {
+    Paper,
     Container,
     IconButton,
     InputBase,
-    Paper,
     Typography,
     Grid,
 } from '@material-ui/core'
 
+
+import {makeStyles} from '@material-ui/core/styles'
+import SearchIcon from '@material-ui/icons/Search'
+import TemplateDefult from '../src/templates/Default'
 import Card from '../src/components/Card'
+import dbConnect from '../src/utils/dbConnect'
+import ProductsModel from '../src/models/products'
+import {formatCurrency} from '../src/utils/currency'
 
-import SearchIcon from '@material-ui/icons/search'
-import TemplateDefault from '../src/templates/Default'
-import { makeStyles } from '@material-ui/core'
 
-const useStyels = makeStyles((theme) => ({
-    searchBox: {
+const useStyles = makeStyles((theme) => ({
+    searchBox:{
         display: 'flex',
         justifyContent: 'center',
         padding: theme.spacing(0, 2),
-        marginTop: '20px',
+        marginTop: 20,
     },
-    cardGrid: {
-        marginTop: '50px',
+    cardGrid:{
+        marginTop: 50,
+    },
+    productLink: {
+        textDecoration: 'none !important',
     }
 }))
 
-const Home = () => {
-    const classes = useStyels()
-    return(
-        <TemplateDefault>
-            <Container maxWidth="md" className={classes.searchContainer}>
-                <Typography component="h1" variant="h3" align="center" color="textPrimary">
+const Home = ({products}) => {
+    const router = useRouter()
+    const [search, setSearch] = useState()
+    const classes = useStyles()
+
+    const handleSubmitSearch = () => {
+        router.push({
+            pathname: `/search/${search}`,
+        })
+    }
+
+    return (
+        <TemplateDefult>
+            <Container maxWidth="md">
+                <Typography component="h1" variant="h3" align="center" color="primary">
                     O que deseja encontrar?
                 </Typography>
                 <Paper className={classes.searchBox}>
-                    <InputBase 
-                        placeholder="Ex:.. iPhone 12 mini com garantia"
+                    <InputBase
+                        onChange={(e) => setSearch(e.target.value)} 
+                        placeholder="Ex.: iPhone 12 com garantia"
                         fullWidth
                     />
-                    <IconButton>
+                    <IconButton onClick={handleSubmitSearch}>
                         <SearchIcon />
                     </IconButton>
                 </Paper>
             </Container>
 
-            <Container maxWidth="md" className={classes.cardGrid}>
-                <Typography component="h2" variant="h4" align="center" color="textPrimary">Destaques</Typography>
+            <Container maxWidth="lg" className={classes.cardGrid}>
+                <Typography component="h2" variant="h4" align="center" color="primary">
+                    Destaques
+                </Typography>
                 <br />
                 <Grid container spacing={4}>
-                    <Grid item xs={12} sm={6} md={4} >
-                    <Card 
-                        image={'https://source.unsplash.com/random'}
-                        title="Produto X"
-                        subtitle="R$: 60,00"
-                    />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} >
-                        <Card 
-                        image={'https://source.unsplash.com/random'}
-                        title="Produto X"
-                        subtitle="R$: 60,00"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4} >
-                        <Card 
-                        image={'https://source.unsplash.com/random'}
-                        title="Produto X"
-                        subtitle="R$: 60,00"
-                        />
-                    </Grid>
+                    {
+                        products.map(product => {
+                            const category = slugify(product.category).toLocaleLowerCase()
+                            const title = slugify(product.title).toLocaleLowerCase()
+
+                            return (
+                                <Grid key={product._id} item xs={12} sm={6} md={4}>
+                                    <Link href={`/${category}/${title}/${product._id}`}>
+                                        <a className={classes.productLink}> 
+                                            <Card 
+                                                image={`/uploads/${product.files[0].name}`}
+                                                title={product.title}
+                                                subtitle={formatCurrency(product.price)}
+                                            />
+                                        </a>
+                                    </Link>
+                                </Grid>
+                            )
+                        })
+                    }
                 </Grid>
             </Container>
-        </TemplateDefault>
+        </TemplateDefult>
     )
+}
+
+export async function getServerSideProps() {
+    await dbConnect()
+
+    const products = await ProductsModel.aggregate([{
+        $sample: { size: 6 }
+    }])
+
+    return {
+        props: {
+            products: JSON.parse(JSON.stringify(products))
+        }
+    }
 }
 
 export default Home
